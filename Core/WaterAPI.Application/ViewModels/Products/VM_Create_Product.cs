@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WaterAPI.Domain.Entities.Common;
 
-namespace WaterAPI.Domain.Entities
+namespace WaterAPI.Application.ViewModels.Products
 {
-    public class Product : BaseEntity
+    public class VM_Create_Product
     {
-        public String Name { get; set; }
+        public string Name { get; set; }
         public int Stock { get; set; }
         public float Price { get; set; }
-        ICollection<Order> Orders { get; set; }
     }
 }
