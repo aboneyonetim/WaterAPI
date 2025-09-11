@@ -12,8 +12,8 @@ using WaterAPI.Persistence.Contexts;
 namespace WaterAPI.Persistence.Migrations
 {
     [DbContext(typeof(WaterAPIDbContext))]
-    [Migration("20250904112606_mig_1")]
-    partial class mig_1
+    [Migration("20250910072512_mig_2")]
+    partial class mig_2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,7 +49,36 @@ namespace WaterAPI.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Costomers");
+                    b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("WaterAPI.Domain.Entities.File", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(21)
+                        .HasColumnType("character varying(21)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Files");
+
+                    b.HasDiscriminator().HasValue("File");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("WaterAPI.Domain.Entities.Order", b =>
@@ -124,6 +153,20 @@ namespace WaterAPI.Persistence.Migrations
                     b.HasIndex("OrderId");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("WaterAPI.Domain.Entities.InvoiceFile", b =>
+                {
+                    b.HasBaseType("WaterAPI.Domain.Entities.File");
+
+                    b.HasDiscriminator().HasValue("InvoiceFile");
+                });
+
+            modelBuilder.Entity("WaterAPI.Domain.Entities.ProductImageFile", b =>
+                {
+                    b.HasBaseType("WaterAPI.Domain.Entities.File");
+
+                    b.HasDiscriminator().HasValue("ProductImageFile");
                 });
 
             modelBuilder.Entity("WaterAPI.Domain.Entities.Order", b =>

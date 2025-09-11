@@ -20,4 +20,8 @@
     <ProjectReference Include="..\..\Infrastructure\WaterAPI.Persistence\WaterAPI.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\resources\" />
+  </ItemGroup>
+
 </Project>

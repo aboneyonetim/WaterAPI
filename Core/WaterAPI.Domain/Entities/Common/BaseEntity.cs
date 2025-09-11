@@ -10,7 +10,7 @@ namespace WaterAPI.Domain.Entities.Common
     {
         public Guid Id { get; set; }
         public DateTime CreatedDate { get; set; }
-        public DateTime? UpdatedDate { get; set; }
+       virtual public DateTime? UpdatedDate { get; set; } //Tüm entitylerde geçerli olmayabilir.Bazıları migrate etmeyebilir.
         public bool IsActive  { get; set; }
         public bool IsDeleted  { get; set; }
   

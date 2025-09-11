@@ -12,8 +12,8 @@ using WaterAPI.Persistence.Contexts;
 namespace WaterAPI.Persistence.Migrations
 {
     [DbContext(typeof(WaterAPIDbContext))]
-    [Migration("20250904114804_mig_2")]
-    partial class mig_2
+    [Migration("20250910081353_mig_4")]
+    partial class mig_4
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,6 +50,43 @@ namespace WaterAPI.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("WaterAPI.Domain.Entities.File", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasMaxLength(21)
+                        .HasColumnType("character varying(21)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Files");
+
+                    b.HasDiscriminator().HasValue("File");
+
+                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("WaterAPI.Domain.Entities.Order", b =>
@@ -124,6 +161,26 @@ namespace WaterAPI.Persistence.Migrations
                     b.HasIndex("OrderId");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("WaterAPI.Domain.Entities.InvoiceFile", b =>
+                {
+                    b.HasBaseType("WaterAPI.Domain.Entities.File");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
+
+                    b.HasDiscriminator().HasValue("InvoiceFile");
+                });
+
+            modelBuilder.Entity("WaterAPI.Domain.Entities.ProductImageFile", b =>
+                {
+                    b.HasBaseType("WaterAPI.Domain.Entities.File");
+
+                    b.Property<int>("Width")
+                        .HasColumnType("integer");
+
+                    b.HasDiscriminator().HasValue("ProductImageFile");
                 });
 
             modelBuilder.Entity("WaterAPI.Domain.Entities.Order", b =>

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WaterAPI.Persistence.Contexts;
@@ -11,9 +12,11 @@ using WaterAPI.Persistence.Contexts;
 namespace WaterAPI.Persistence.Migrations
 {
     [DbContext(typeof(WaterAPIDbContext))]
-    partial class WaterAPIDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250910075358_mig_3")]
+    partial class mig_3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,23 +66,11 @@ namespace WaterAPI.Persistence.Migrations
                         .HasMaxLength(21)
                         .HasColumnType("character varying(21)");
 
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("Path")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Storage")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -168,18 +159,12 @@ namespace WaterAPI.Persistence.Migrations
                 {
                     b.HasBaseType("WaterAPI.Domain.Entities.File");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
-
                     b.HasDiscriminator().HasValue("InvoiceFile");
                 });
 
             modelBuilder.Entity("WaterAPI.Domain.Entities.ProductImageFile", b =>
                 {
                     b.HasBaseType("WaterAPI.Domain.Entities.File");
-
-                    b.Property<int>("Width")
-                        .HasColumnType("integer");
 
                     b.HasDiscriminator().HasValue("ProductImageFile");
                 });
