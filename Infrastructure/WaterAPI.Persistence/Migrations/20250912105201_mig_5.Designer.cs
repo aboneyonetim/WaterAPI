@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WaterAPI.Persistence.Contexts;
@@ -11,9 +12,11 @@ using WaterAPI.Persistence.Contexts;
 namespace WaterAPI.Persistence.Migrations
 {
     [DbContext(typeof(WaterAPIDbContext))]
-    partial class WaterAPIDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250912105201_mig_5")]
+    partial class mig_5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,21 +38,6 @@ namespace WaterAPI.Persistence.Migrations
                     b.HasIndex("ProductsId");
 
                     b.ToTable("OrderProduct");
-                });
-
-            modelBuilder.Entity("ProductProductImageFile", b =>
-                {
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("productImageFilesId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("ProductId", "productImageFilesId");
-
-                    b.HasIndex("productImageFilesId");
-
-                    b.ToTable("ProductProductImageFile");
                 });
 
             modelBuilder.Entity("WaterAPI.Domain.Entities.Customer", b =>
@@ -203,8 +191,13 @@ namespace WaterAPI.Persistence.Migrations
                 {
                     b.HasBaseType("WaterAPI.Domain.Entities.File");
 
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
                     b.Property<int>("Width")
                         .HasColumnType("integer");
+
+                    b.HasIndex("ProductId");
 
                     b.HasDiscriminator().HasValue("ProductImageFile");
                 });
@@ -224,21 +217,6 @@ namespace WaterAPI.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ProductProductImageFile", b =>
-                {
-                    b.HasOne("WaterAPI.Domain.Entities.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WaterAPI.Domain.Entities.ProductImageFile", null)
-                        .WithMany()
-                        .HasForeignKey("productImageFilesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("WaterAPI.Domain.Entities.Order", b =>
                 {
                     b.HasOne("WaterAPI.Domain.Entities.Customer", "Customer")
@@ -250,9 +228,25 @@ namespace WaterAPI.Persistence.Migrations
                     b.Navigation("Customer");
                 });
 
+            modelBuilder.Entity("WaterAPI.Domain.Entities.ProductImageFile", b =>
+                {
+                    b.HasOne("WaterAPI.Domain.Entities.Product", "Product")
+                        .WithMany("productImageFilesX")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("WaterAPI.Domain.Entities.Customer", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("WaterAPI.Domain.Entities.Product", b =>
+                {
+                    b.Navigation("productImageFilesX");
                 });
 #pragma warning restore 612, 618
         }

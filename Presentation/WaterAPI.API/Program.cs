@@ -8,6 +8,7 @@ using WaterAPI.Infrastructure.Filters;
 using WaterAPI.Infrastructure;
 using WaterAPI.Infrastructure.Services.Storage.Local;
 using WaterAPI.Application.Abstractions.Storage;
+using WaterAPI.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddPersistenceServices();
 builder.Services.AddInfrastructureServices();
+builder.Services.AddApplicationServices();
 //builder.Services.AddStorage(storageType.Local);//Local,Azure
 builder.Services.AddStorage<LocalStorage>();
 //builder.Services.AddControllers()  

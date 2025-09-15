@@ -8,6 +8,7 @@ namespace WaterAPI.Domain.Entities
 {
    public class ProductImageFile : File
     {
+        public ICollection<Product> Product { get; set; }
         public int Width { get; set; }
 
     }
