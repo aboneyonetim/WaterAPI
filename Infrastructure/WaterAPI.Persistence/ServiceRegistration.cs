@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using WaterAPI.Persistence.Repositories;
 using WaterAPI.Application.Repositories;
 using WaterAPI.Persistence.Repositories.File;
+using WaterAPI.Domain.Entities.Identity;
 
 namespace WaterAPI.Persistence
 {
@@ -18,6 +19,7 @@ namespace WaterAPI.Persistence
         public static void AddPersistenceServices(this IServiceCollection services)
         {
             services.AddDbContext<WaterAPIDbContext>(options => options.UseNpgsql(Configuration.ConnectionString));
+            services.AddIdentity<AppUser,AppRole>().AddEntityFrameworkStores<WaterAPIDbContext>();
             services.AddScoped < ICustomerReadRepository, CustomerReadRepository > ();
             services.AddScoped < ICustomerWriteRepository, CustomerWriteRepository > ();
             services.AddScoped < IOrderReadRepository, OrderReadRepository > ();

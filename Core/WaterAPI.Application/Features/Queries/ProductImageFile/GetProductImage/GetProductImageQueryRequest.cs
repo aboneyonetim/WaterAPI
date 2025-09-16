@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace WaterAPI.Application.Features.Queries.ProductImageFile.GetProductImage
 {
-   public class GetProductImageQueryRequest : IRequest<GetProductImageQueryResponse>
+   public class GetProductImageQueryRequest : IRequest<List<GetProductImageQueryResponse>>
     {
+        public string Id { get; set; }
     }
 }

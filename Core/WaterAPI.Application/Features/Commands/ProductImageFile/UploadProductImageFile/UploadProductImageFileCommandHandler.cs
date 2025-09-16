@@ -14,6 +14,14 @@ namespace WaterAPI.Application.Features.Commands.ProductImageFile.UploadProductI
         readonly IStorageService _storageService;
         readonly IProductReadRepository _productReadRepository;
         readonly IProductImageFileWriteRepository _productImageFileWriteRepository;
+
+        public UploadProductImageFileCommandHandler(IStorageService storageService, IProductReadRepository productReadRepository, IProductImageFileWriteRepository productImageFileWriteRepository)
+        {
+            _storageService = storageService;
+            _productReadRepository = productReadRepository;
+            _productImageFileWriteRepository = productImageFileWriteRepository;
+        }
+
         public async Task<UploadProductImageFileCommandResponse> Handle(UploadProductImageFileCommandRequest request, CancellationToken cancellationToken)
         {
             List<(string fileName, string pathOrContainerName)> results = await _storageService.UploadAsync("photo-images", request.Files);

@@ -6,10 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WaterAPI.Domain.Entities.Common;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using WaterAPI.Domain.Entities.Identity;
 
 namespace WaterAPI.Persistence.Contexts
 {
-    public class WaterAPIDbContext : DbContext
+    public class WaterAPIDbContext : IdentityDbContext<AppUser,AppRole, string>
     {
         //public WaterAPIDbContext(DbContext opttions) : base(opttions)
         //{  }
