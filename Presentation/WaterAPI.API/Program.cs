@@ -9,6 +9,8 @@ using WaterAPI.Infrastructure;
 using WaterAPI.Infrastructure.Services.Storage.Local;
 using WaterAPI.Application.Abstractions.Storage;
 using WaterAPI.Application;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +37,23 @@ builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAuthentication("Admin")
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new()
+        {
+            ValidateAudience = true,//Oluþturulacak token deðerini kimlerin/hangi originlerin/sitelerin kullanacaðýný belirlediðimiz deðerdir.->www.bilmemne.com
+            ValidateIssuer = true,  //Oluþturulacak token deðerini kimin daðýttýðýný ifade eden alandýr. www.myapi.com
+            ValidateLifetime = true,//Oluþturulan token deðerinin süresini kontrol edecek olan doðrulamadýr.
+            ValidateIssuerSigningKey = true,//Oluþturulacak token key inin bizim uygulamamýza ait bir deðer olduðunu ifade eden security key verisinin doðrulanmasýdýr.
+
+            ValidAudience = builder.Configuration["Token:Audience"],
+            ValidIssuer = builder.Configuration["Token:Issuer"],   
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:SecurityKey"]))
+        };
+
+
+    });
 
 var app = builder.Build();
 

@@ -21,21 +21,27 @@ namespace WaterAPI.Application.Features.Commands.AppUser.CreateUser
 
         public async Task<CreateUserCommandResponse> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
         {
-          IdentityResult result = await  _userManager.CreateAsync(new(){
-            NameSurname=request.NameSurname,    
-            UserName=request.UserName,
-            Email=request.Email,
+            IdentityResult result = await _userManager.CreateAsync(new() {
+                Id = Guid.NewGuid().ToString(),
+              NameSurname = request.NameSurname,
+                UserName = request.UserName,
+                Email = request.Email,
 
-            },request.Password);
+            }, request.Password);
+
+            CreateUserCommandResponse response = new() { Succeeded =result.Succeeded };
+
+
             if (result.Succeeded)
-                return new()
-                {
-                    Succeeded = true,
-                    Massage = "Kullanıcı başarıyla oluşturulmuştur."
+               response.Massage = "Kullanıcı başarıyla oluşturulmuştur.";
 
-                };
-           
-            throw new UserCreateFailedException();
+            else
+                foreach (var error in result.Errors)
+                    response.Massage += $"{error.Code} - {error.Description}\n";
+
+            return response;
+                
+            //throw new UserCreateFailedException();
 
         }
     }

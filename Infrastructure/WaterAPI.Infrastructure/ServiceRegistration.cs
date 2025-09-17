@@ -7,10 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using WaterAPI.Application.Abstractions.Storage;
 using WaterAPI.Application.Abstractions.Storage.Local;
+using WaterAPI.Application.Abstractions.Token;
 using WaterAPI.Infrastructure.Enums;
 using WaterAPI.Infrastructure.Services;
 using WaterAPI.Infrastructure.Services.Storage;
 using WaterAPI.Infrastructure.Services.Storage.Local;
+using WaterAPI.Infrastructure.Services.Token;
 
 namespace WaterAPI.Infrastructure
 {
@@ -20,6 +22,7 @@ namespace WaterAPI.Infrastructure
             {
 
             serviceCollection.AddScoped<IStorageService, StorageService>();
+            serviceCollection.AddScoped<ITokenHandler, TokenHandler>();
         }
         public static void AddStorage<T>(this IServiceCollection serviceCollection) where T : Storage, IStorage
         {

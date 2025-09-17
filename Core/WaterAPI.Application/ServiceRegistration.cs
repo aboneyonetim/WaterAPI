@@ -15,6 +15,7 @@ namespace WaterAPI.Application
             // RegisterServicesFromAssembly methodunu kullanarak tüm MediatR sınıflarını (Handler, Request, vb.) otomatik olarak ekler.
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(ServiceRegistration).Assembly));
             //services.AddHttpClient();
+
         }
     }
 }
