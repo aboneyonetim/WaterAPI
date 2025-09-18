@@ -38,7 +38,7 @@ namespace WaterAPI.Application.Features.Commands.AppUser.LoginUser
                 throw new NotFoundUserException();
 
            SignInResult result = await _signInManager.CheckPasswordSignInAsync(user ,request.Password,false); //appuser türünde bir nesne ve string olark bir şifre alıp
-            if (result.Succeeded)                           //Authentication başarılı!        nesnenin aldığı şifre ile doğrulanıp doğrulanmadığını bool türünde döner.
+            if (result.Succeeded)                           //Authentication başarılı!                    nesnenin aldığı şifre ile doğrulanıp doğrulanmadığını bool türünde döner.
             {
                 //...Yetkileri belirlememiz gerekiyor.
                Token token= _tokenHandler.CreateAccessToken(5);
@@ -51,7 +51,7 @@ namespace WaterAPI.Application.Features.Commands.AppUser.LoginUser
             //{
             //Massage ="Kullanıcı adı veya şifre hatalıdır."
             //};
-            throw new AbandonedMutexException();
+            throw new AuthenticationErrorException();
         }
     }
 }
