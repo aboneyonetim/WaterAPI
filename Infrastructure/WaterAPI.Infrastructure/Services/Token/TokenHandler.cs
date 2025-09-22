@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using WaterAPI.Application.Abstractions.Token;
@@ -19,7 +20,8 @@ namespace WaterAPI.Infrastructure.Services.Token
             _configuration = configuration;
         }
 
-        Application.DTOs.Token ITokenHandler.CreateAccessToken(int minute)
+
+        Application.DTOs.Token ITokenHandler.CreateAccessToken(int second)
         {
             Application.DTOs.Token token = new ();
 
@@ -30,7 +32,7 @@ namespace WaterAPI.Infrastructure.Services.Token
             SigningCredentials signingCredentials = new(securityKey,SecurityAlgorithms.HmacSha256);
             
             //Oluşturulacak token ayarlarını veriyoruz.
-            token.Expiration=DateTime.UtcNow.AddMinutes(minute);
+            token.Expiration=DateTime.UtcNow.AddSeconds(second);
             JwtSecurityToken securityToken = new(
                 audience: _configuration["Token:Audience"],
                 issuer: _configuration["Token:Issuer"],
@@ -42,7 +44,20 @@ namespace WaterAPI.Infrastructure.Services.Token
             //Token oluşturucu sınıfından bir örnek alalım
             JwtSecurityTokenHandler tokenHandler = new();
             token.AccessToken = tokenHandler.WriteToken(securityToken);
+
+            
+            token.RefreshToken = CreateRefreshToken();
+
             return token;
+
+        }
+
+        public string CreateRefreshToken()
+        {
+            byte[] number = new byte[32];
+           using RandomNumberGenerator random = RandomNumberGenerator.Create();
+            random.GetBytes(number);
+        return Convert.ToBase64String(number);
 
         }
     }

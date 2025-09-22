@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WaterAPI.Application.Features.Commands.AppUser.GoogleLogin;
 using WaterAPI.Application.Features.Commands.AppUser.LoginUser;
+using WaterAPI.Application.Features.Commands.AppUser.RefreshTokenLogin;
 
 namespace WaterAPI.API.Controllers
 {
@@ -21,6 +22,12 @@ namespace WaterAPI.API.Controllers
         public async Task<IActionResult> Login([FromBody] LoginUserCommandRequest loginUserCommandRequest)
         {
             LoginUserCommandResponse response = await _mediator.Send(loginUserCommandRequest);
+            return Ok(response);
+        }
+        [HttpGet("[action]")]
+        public async Task<IActionResult> RefreshTokenLogin([FromBody] RefreshTokenLoginCommandRequest refreshTokenLoginCommandRequest)
+        {
+            RefreshTokenLoginCommandResponse response = await _mediator.Send(refreshTokenLoginCommandRequest);
             return Ok(response);
         }
         [HttpPost("google-login")]

@@ -1,6 +1,7 @@
 ﻿using Google.Apis.Auth;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -23,14 +24,20 @@ namespace WaterAPI.Persistence.Services
         readonly SignInManager<AppUser> _signInManager; // Kullanıcının giriş işlemlerinden sorumlu servis
         readonly IConfiguration _configuration;
         readonly ITokenHandler _tokenHandler;           //Token oluşturma amacıyla çağırılan yer tutucu
+        readonly IUserService _userService;
 
-         
-        public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IConfiguration configuration, ITokenHandler tokenHandler)//,HttpClient httpClient)
+
+        public AuthService(UserManager<AppUser> userManager,
+                           SignInManager<AppUser> signInManager,
+                           IConfiguration configuration,
+                           ITokenHandler tokenHandler,
+                           IUserService userService)//,HttpClient httpClient)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
             _tokenHandler = tokenHandler;
+            _userService = userService;
             // _httpClient = httpClient;
         }
 
@@ -59,6 +66,7 @@ namespace WaterAPI.Persistence.Services
                 await _userManager.AddLoginAsync(user, info);//AspNetUserLogins
 
                 Token token = _tokenHandler.CreateAccessToken(accesTokenLifeTime);
+                await _userService.UpdateRefreshToken(token.RefreshToken,user,token.Expiration,5);
                 return token;
 
             }
@@ -93,6 +101,7 @@ namespace WaterAPI.Persistence.Services
             {
                 //...Yetkileri belirlememiz gerekiyor.
                 Token token = _tokenHandler.CreateAccessToken(accessTokenLifeTime);
+                await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 25);
                 return token;
             }
             throw new AuthenticationErrorException();
@@ -100,6 +109,19 @@ namespace WaterAPI.Persistence.Services
             //{
             //Massage ="Kullanıcı adı veya şifre hatalıdır."
             //};        }
+        }
+
+        public async Task<Token> RefreshTokenLoginAsync(string refreshToken)
+        {
+            AppUser? user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
+            if (user!=null && user?.RefreshTokenEndDate> DateTime.UtcNow )
+            {
+             Token token = _tokenHandler.CreateAccessToken(15);
+                await _userService.UpdateRefreshToken(token.RefreshToken,user,token.Expiration,25);
+                return token;
+            }
+            else
+                throw new NotFoundUserException();
         }
     }
 }

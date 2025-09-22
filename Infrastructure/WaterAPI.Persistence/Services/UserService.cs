@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WaterAPI.Application.Abstractions.Services;
 using WaterAPI.Application.DTOs.User;
+using WaterAPI.Application.Exceptions;
 using WaterAPI.Application.Features.Commands.AppUser.CreateUser;
 using WaterAPI.Domain.Entities.Identity;
 
@@ -44,5 +45,20 @@ namespace WaterAPI.Persistence.Services
 
             return response;
         }
+
+        public async Task UpdateRefreshToken(string refreshToken, AppUser user,DateTime accessTokenDate,int addOnAccesTokenDate)
+        {
+
+            
+            if (user != null)
+            {
+                user.RefreshToken = refreshToken;
+                user.RefreshTokenEndDate = accessTokenDate.AddSeconds(addOnAccesTokenDate);
+                await _userManager.UpdateAsync(user);
+            }
+            else
+                throw new NotFoundUserException();
+        }
+
     }
 }
