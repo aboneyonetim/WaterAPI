@@ -5,41 +5,43 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WaterAPI.Application.Abstractions.Services;
+using WaterAPI.Application.DTOs.User;
 using WaterAPI.Application.Exceptions;
 
 namespace WaterAPI.Application.Features.Commands.AppUser.CreateUser
 {
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommandRequest, CreateUserCommandResponse>
     {
-        //IUsermanager servisi Identity mekanizmasında kullanıcı işlemlerini kendi yapan bir servistir o yüzden repository eklemeye gerek yoktur.
-        readonly UserManager<Domain.Entities.Identity.AppUser> _userManager;
+        
+        readonly IUserService _userService;
 
-        public CreateUserCommandHandler(UserManager<Domain.Entities.Identity.AppUser> userManager)
+        public CreateUserCommandHandler(IUserService userService)
         {
-            this._userManager = userManager;
+            _userService = userService;
         }
 
         public async Task<CreateUserCommandResponse> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
         {
-            IdentityResult result = await _userManager.CreateAsync(new() {
-                Id = Guid.NewGuid().ToString(),
-              NameSurname = request.NameSurname,
+            //CreateUserCommandRequest nesnesi olarak gelen verileri CreateUserDTO nesnesine dönüştürüyoruz.
+            //Persistance katmanındaki userService deki metodu çağıdık parametre olarak bu metot CreateUserDTO alıyor.
+            //Bu yüzden CreateUserCommandRequest i CreateUserDTO ya çeviriyoruz.Bize döndürdüğü nesne CreateUserResponseDTO 
+            //bu yüzden CreateUserResponseDTO yu CreateUserResponseCommandResponse a çeviriyoruz. ve bunu response olarak döndürüyoruz.
+            CreateUserResponse response = await _userService.CreateAsync(new()
+            {
                 UserName = request.UserName,
+                NameSurname=request.NameSurname,
                 Email = request.Email,
+                Password = request.Password,
+                PasswordConfirm = request.PasswordConfirm,
 
-            }, request.Password);
-
-            CreateUserCommandResponse response = new() { Succeeded =result.Succeeded };
-
-
-            if (result.Succeeded)
-               response.Massage = "Kullanıcı başarıyla oluşturulmuştur.";
-
-            else
-                foreach (var error in result.Errors)
-                    response.Massage += $"{error.Code} - {error.Description}\n";
-
-            return response;
+            }
+                );
+            return new()
+            {
+                Massage=response.Massage,
+                Succeeded=response.Succeeded,
+            };
                 
             //throw new UserCreateFailedException();
 

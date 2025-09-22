@@ -1,11 +1,12 @@
-﻿using Google.Apis.Auth;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WaterAPI.Application.Abstractions.Services;
+using WaterAPI.Application.Abstractions.Services.Authentication;
 using WaterAPI.Application.Abstractions.Token;
 using WaterAPI.Application.DTOs;
 
@@ -13,53 +14,19 @@ namespace WaterAPI.Application.Features.Commands.AppUser.GoogleLogin
 {
     public class GoogleLoginCommandHandler : IRequestHandler<GoogleLoginCommandRequest, GoogleLoginCommandResponse>
     {
-    readonly UserManager<Domain.Entities.Identity.AppUser> _userManager;
-        readonly ITokenHandler _tokenHandler; 
+    readonly IAuthService _authService;
+  //readonly IExternalAuthentication _authService; //bu da olabilir
 
-        public GoogleLoginCommandHandler(UserManager<Domain.Entities.Identity.AppUser> userManager, ITokenHandler tokenHandler)
+        public GoogleLoginCommandHandler(IAuthService authService)
         {
-            _userManager = userManager;
-            _tokenHandler = tokenHandler;
+            _authService = authService;
         }
 
         public async Task<GoogleLoginCommandResponse> Handle(GoogleLoginCommandRequest request, CancellationToken cancellationToken)
         {
-            var settings = new GoogleJsonWebSignature.ValidationSettings()
-            {
-                Audience = new List<string> { "923659442061-g47r3aq8igh281dsv96d0hrbcq9nqk5a.apps.googleusercontent.com" }
-            };
-            var payload= await GoogleJsonWebSignature.ValidateAsync(request.IdToken, settings);
-
-           var info = new UserLoginInfo(request.Provider, payload.Subject,request.Provider);
-            Domain.Entities.Identity.AppUser user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
-            bool result = user != null;
-            if (user == null) 
-            {
-                user = await _userManager.FindByEmailAsync(payload.Email);
-                if (user == null) 
-                {
-                    user = new()
-                    {
-                        Id=Guid.NewGuid().ToString(),
-                        Email=payload.Email,
-                        UserName=payload.Email,
-                        NameSurname=payload.Name
-                    };
-                    var identityResult = await _userManager.CreateAsync(user);
-                    result= identityResult.Succeeded;
-
-                }
-            }
-            if (result)
-                await _userManager.AddLoginAsync(user, info);//AspNetUserLogins
-            else
-                throw new Exception("Invalid external authentication");
-
-            Token token = _tokenHandler.CreateAccessToken(5);
-            return new()
-            {
-                Token = token,
-            };
+            var token= await _authService.GoogleLoginAsync(request.IdToken,15);
+            return new() 
+            { Token = token };
         }
     }
 }

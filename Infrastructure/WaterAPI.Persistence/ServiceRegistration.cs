@@ -11,6 +11,9 @@ using WaterAPI.Persistence.Repositories;
 using WaterAPI.Application.Repositories;
 using WaterAPI.Persistence.Repositories.File;
 using WaterAPI.Domain.Entities.Identity;
+using WaterAPI.Application.Abstractions.Services;
+using WaterAPI.Persistence.Services;
+using WaterAPI.Application.Abstractions.Services.Authentication;
 
 namespace WaterAPI.Persistence
 {
@@ -42,6 +45,10 @@ namespace WaterAPI.Persistence
             services.AddScoped < IInvoiceFileReadRepository, InvoiceFileReadRepository>();
             services.AddScoped < IInvoiceFileWriteRepository, InvoiceFileWriteRepository>();
 
+            services.AddScoped < IUserService, UserService>();
+            services.AddScoped < IAuthService, AuthService>();
+            services.AddScoped < IExternalAuthentication, AuthService>();
+            services.AddScoped < IInternalAuthentication, AuthService>();
 
 
         }
