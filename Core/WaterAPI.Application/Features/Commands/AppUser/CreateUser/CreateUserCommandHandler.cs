@@ -27,7 +27,7 @@ namespace WaterAPI.Application.Features.Commands.AppUser.CreateUser
             //Persistance katmanındaki userService deki metodu çağıdık parametre olarak bu metot CreateUserDTO alıyor.
             //Bu yüzden CreateUserCommandRequest i CreateUserDTO ya çeviriyoruz.Bize döndürdüğü nesne CreateUserResponseDTO 
             //bu yüzden CreateUserResponseDTO yu CreateUserResponseCommandResponse a çeviriyoruz. ve bunu response olarak döndürüyoruz.
-            CreateUserResponse response = await _userService.CreateAsync(new()
+            CreateUserResponseDTO response = await _userService.CreateAsync(new()
             {
                 UserName = request.UserName,
                 NameSurname=request.NameSurname,

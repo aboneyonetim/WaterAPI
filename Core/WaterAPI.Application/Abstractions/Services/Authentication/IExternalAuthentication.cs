@@ -8,6 +8,6 @@ namespace WaterAPI.Application.Abstractions.Services.Authentication
 {
    public interface IExternalAuthentication
     {
-        Task<DTOs.Token> GoogleLoginAsync(string idToken, int accesTokenLifeTime);
+        Task<DTOs.TokenDTO> GoogleLoginAsync(string idToken, int accesTokenLifeTime);
     }
 }

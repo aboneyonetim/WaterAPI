@@ -20,7 +20,7 @@ namespace WaterAPI.Application.Features.Commands.AppUser.RefreshTokenLogin
 
         public async Task<RefreshTokenLoginCommandResponse> Handle(RefreshTokenLoginCommandRequest request, CancellationToken cancellationToken)
         {
-            Token token = await _authService.RefreshTokenLoginAsync(request.RefreshToken);
+            TokenDTO token = await _authService.RefreshTokenLoginAsync(request.RefreshToken);
             return new()
             {
                 Token = token,

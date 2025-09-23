@@ -10,6 +10,6 @@ namespace WaterAPI.Application.Features.Commands.AppUser.RefreshTokenLogin
 {
     public class RefreshTokenLoginCommandResponse 
     {
-        public Token Token { get; set; }
+        public TokenDTO Token { get; set; }
     }
 }

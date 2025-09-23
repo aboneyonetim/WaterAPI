@@ -41,7 +41,7 @@ namespace WaterAPI.Persistence.Services
             // _httpClient = httpClient;
         }
 
-        async Task<Token> CreateUserExternalAsync(AppUser user, string email, string name, UserLoginInfo info, int accesTokenLifeTime)
+        async Task<TokenDTO> CreateUserExternalAsync(AppUser user, string email, string name, UserLoginInfo info, int accesTokenLifeTime)
         {
             bool result = user != null;
             if (user == null)
@@ -65,7 +65,7 @@ namespace WaterAPI.Persistence.Services
             {
                 await _userManager.AddLoginAsync(user, info);//AspNetUserLogins
 
-                Token token = _tokenHandler.CreateAccessToken(accesTokenLifeTime);
+                TokenDTO token = _tokenHandler.CreateAccessToken(accesTokenLifeTime,user);
                 await _userService.UpdateRefreshToken(token.RefreshToken,user,token.Expiration,5);
                 return token;
 
@@ -73,7 +73,7 @@ namespace WaterAPI.Persistence.Services
             throw new Exception("Invalid external authentication");
         }
 
-        public async Task<Token> GoogleLoginAsync(string idToken, int accesTokenLifeTime)
+        public async Task<TokenDTO> GoogleLoginAsync(string idToken, int accesTokenLifeTime)
         {
             var settings = new GoogleJsonWebSignature.ValidationSettings()
             {
@@ -88,7 +88,7 @@ namespace WaterAPI.Persistence.Services
 
 
 
-        public async Task<Token> LoginAsync(string userNameOrEmail, string password, int accessTokenLifeTime)
+        public async Task<TokenDTO> LoginAsync(string userNameOrEmail, string password, int accessTokenLifeTime)
         {
             AppUser user = await _userManager.FindByNameAsync(userNameOrEmail);//aldığı userNameOrEmail e göre appUser ı getiriyor
             if (user == null)
@@ -100,7 +100,7 @@ namespace WaterAPI.Persistence.Services
             if (result.Succeeded)                           //Authentication başarılı!                    nesnenin aldığı şifre ile doğrulanıp doğrulanmadığını bool türünde döner.
             {
                 //...Yetkileri belirlememiz gerekiyor.
-                Token token = _tokenHandler.CreateAccessToken(accessTokenLifeTime);
+                TokenDTO token = _tokenHandler.CreateAccessToken(accessTokenLifeTime, user);
                 await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 25);
                 return token;
             }
@@ -111,12 +111,12 @@ namespace WaterAPI.Persistence.Services
             //};        }
         }
 
-        public async Task<Token> RefreshTokenLoginAsync(string refreshToken)
+        public async Task<TokenDTO> RefreshTokenLoginAsync(string refreshToken)
         {
             AppUser? user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken);
             if (user!=null && user?.RefreshTokenEndDate> DateTime.UtcNow )
             {
-             Token token = _tokenHandler.CreateAccessToken(15);
+             TokenDTO token = _tokenHandler.CreateAccessToken(15,user);
                 await _userService.UpdateRefreshToken(token.RefreshToken,user,token.Expiration,25);
                 return token;
             }

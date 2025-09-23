@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,16 +13,15 @@ namespace WaterAPI.Application.Features.Queries.Product.GetAllProduct
     public class GetAllProductQueryHandler : IRequestHandler<GetAllProductQueryRequest, GetAllProductQueryResponse>// MediatR kütüphanesi için özel yapı 
     {
         readonly IProductReadRepository _productReadRepository;
+        readonly ILogger<GetAllProductQueryHandler> _logger;
 
-        public GetAllProductQueryHandler(IProductReadRepository productReadRepository)
+        public GetAllProductQueryHandler(IProductReadRepository productReadRepository, ILogger<GetAllProductQueryHandler> logger)
         {
             _productReadRepository = productReadRepository;
+            _logger = logger;
         }
 
-        public GetAllProductQueryHandler()
-        {
-            
-        }
+
         public async Task<GetAllProductQueryResponse> Handle(GetAllProductQueryRequest request, CancellationToken cancellationToken)
         {
             var TotalCount = _productReadRepository.GetAll(false).Count();
@@ -34,7 +34,7 @@ namespace WaterAPI.Application.Features.Queries.Product.GetAllProduct
                 p.CreatedDate,
                 p.UpdatedDate
             }).ToList();
-
+            _logger.LogInformation("Tüm Ürünler Görüntülendi");
             return new()
             {
                 Products = products,

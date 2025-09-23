@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +13,13 @@ namespace WaterAPI.Application.Features.Commands.Product.UpdateProduct
     {
         readonly IProductReadRepository _productReadRepository;
         readonly IProductWriteRepository _productWriteRepository;
+        readonly ILogger<UpdateProductCommandHandler> _logger;
 
-        public UpdateProductCommandHandler(IProductReadRepository productReadRepository, IProductWriteRepository productWriteRepository)
+        public UpdateProductCommandHandler(IProductReadRepository productReadRepository, IProductWriteRepository productWriteRepository, ILogger<UpdateProductCommandHandler> logger)
         {
             _productReadRepository = productReadRepository;
             _productWriteRepository = productWriteRepository;
+            _logger = logger;
         }
 
         public async Task<UpdateProductCommandResponse> Handle(UpdateProductCommandRequest request, CancellationToken cancellationToken)
@@ -27,6 +30,7 @@ namespace WaterAPI.Application.Features.Commands.Product.UpdateProduct
             product.Stock = request.Stock;
             // _productWriteRepository.Update(product); //SaveAsync metodu zaten update işlemini yapıyor.Track edildiği için
             await _productWriteRepository.SaveAsync();
+            _logger.LogInformation("Ürün Güncellendi.");
             return new(); 
         }
     }

@@ -9,6 +9,6 @@ namespace WaterAPI.Application.Features.Commands.AppUser.GoogleLogin
 {
    public class GoogleLoginCommandResponse
     {
-        public Token Token { get; set; }
+        public TokenDTO Token { get; set; }
     }
 }

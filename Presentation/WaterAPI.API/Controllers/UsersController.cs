@@ -8,6 +8,7 @@ using WaterAPI.Application.Features.Commands.AppUser.LoginUser;
 namespace WaterAPI.API.Controllers
 {
     [Route("api/[Controller]")]
+
     
         public class UsersController : ControllerBase
     {

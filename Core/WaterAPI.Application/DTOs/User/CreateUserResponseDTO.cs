@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WaterAPI.Application.DTOs.User
 {
-    public class CreateUserResponse
+    public class CreateUserResponseDTO
     {
         public bool Succeeded { get; set; }
         public string Massage { get; set; }

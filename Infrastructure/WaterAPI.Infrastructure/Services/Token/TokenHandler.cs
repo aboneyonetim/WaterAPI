@@ -1,13 +1,16 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Mvc.Diagnostics;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using WaterAPI.Application.Abstractions.Token;
+using WaterAPI.Domain.Entities.Identity;
 
 namespace WaterAPI.Infrastructure.Services.Token
 {
@@ -21,9 +24,9 @@ namespace WaterAPI.Infrastructure.Services.Token
         }
 
 
-        Application.DTOs.Token ITokenHandler.CreateAccessToken(int second)
+        Application.DTOs.TokenDTO ITokenHandler.CreateAccessToken(int second, AppUser user)
         {
-            Application.DTOs.Token token = new ();
+            Application.DTOs.TokenDTO token = new ();
 
             //Security Key in simetriğini alıyoruz
             SymmetricSecurityKey securityKey = new(Encoding.UTF8.GetBytes(_configuration["Token:SecurityKey"]));
@@ -38,7 +41,8 @@ namespace WaterAPI.Infrastructure.Services.Token
                 issuer: _configuration["Token:Issuer"],
                 expires: token.Expiration,
                 notBefore: DateTime.UtcNow,
-                signingCredentials: signingCredentials
+                signingCredentials: signingCredentials,
+                claims:new List<Claim> {new(ClaimTypes.Name,user.UserName) }
 
                 );
             //Token oluşturucu sınıfından bir örnek alalım

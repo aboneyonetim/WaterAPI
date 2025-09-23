@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WaterAPI.Application.DTOs
 {
-   public class Token
+   public class TokenDTO
     {
         public string AccessToken { get; set; }
         public DateTime Expiration { get; set; }
