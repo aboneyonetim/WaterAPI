@@ -117,7 +117,7 @@ namespace WaterAPI.Persistence.Services
             if (user!=null && user?.RefreshTokenEndDate> DateTime.UtcNow )
             {
              TokenDTO token = _tokenHandler.CreateAccessToken(15,user);
-                await _userService.UpdateRefreshToken(token.RefreshToken,user,token.Expiration,25);
+                await _userService.UpdateRefreshToken(token.RefreshToken,user,token.Expiration,300);
                 return token;
             }
             else

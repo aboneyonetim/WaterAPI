@@ -10,7 +10,7 @@ namespace WaterAPI.Application.Abstractions.Services
 {
     public interface IUserService
     {
-        Task<CreateUserResponseDTO> CreateAsync(CreateUserDTO model);
+        Task<CreateUserResponseDTO> CreateAsync(CreateUserRequestDTO model);
         Task UpdateRefreshToken(string refreshToken,AppUser user, DateTime accessTokenDate, int addOnAccesTokenDate);
     }
 }

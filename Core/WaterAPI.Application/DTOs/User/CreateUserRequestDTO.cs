@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WaterAPI.Application.DTOs.User
 {
-    public class CreateUserDTO
+    public class CreateUserRequestDTO
     {
         public string NameSurname { get; set; }
         public string UserName { get; set; }

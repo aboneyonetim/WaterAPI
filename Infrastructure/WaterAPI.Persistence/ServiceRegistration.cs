@@ -45,6 +45,14 @@ namespace WaterAPI.Persistence
             services.AddScoped < IInvoiceFileReadRepository, InvoiceFileReadRepository>();
             services.AddScoped < IInvoiceFileWriteRepository, InvoiceFileWriteRepository>();
 
+            services.AddScoped < ICardRegisterReadRepository,CardRegisterReadRepository>();
+            services.AddScoped < ICardRegisterWriteRepository,CardRegisterWriteRepository>();
+
+            services.AddScoped<ICardPayloadReadRepository,  CardPayloadReadRepository>();
+            services.AddScoped<ICardPayloadWriteRepository, CardPayloadWriteRepository>();
+
+
+
             services.AddScoped < IUserService, UserService>();
             services.AddScoped < IAuthService, AuthService>();
             services.AddScoped < IExternalAuthentication, AuthService>();

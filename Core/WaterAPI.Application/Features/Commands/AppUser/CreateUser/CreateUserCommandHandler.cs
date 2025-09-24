@@ -24,8 +24,8 @@ namespace WaterAPI.Application.Features.Commands.AppUser.CreateUser
         public async Task<CreateUserCommandResponse> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
         {
             //CreateUserCommandRequest nesnesi olarak gelen verileri CreateUserDTO nesnesine dönüştürüyoruz.
-            //Persistance katmanındaki userService deki metodu çağıdık parametre olarak bu metot CreateUserDTO alıyor.
-            //Bu yüzden CreateUserCommandRequest i CreateUserDTO ya çeviriyoruz.Bize döndürdüğü nesne CreateUserResponseDTO 
+            //Persistance katmanındaki userService deki metodu çağıdık parametre olarak bu metot CreateUserRequestDTO alıyor.
+            //Bu yüzden CreateUserCommandRequest i CreateUserRequestDTO ya çeviriyoruz.Bize döndürdüğü nesne CreateUserResponseDTO 
             //bu yüzden CreateUserResponseDTO yu CreateUserResponseCommandResponse a çeviriyoruz. ve bunu response olarak döndürüyoruz.
             CreateUserResponseDTO response = await _userService.CreateAsync(new()
             {

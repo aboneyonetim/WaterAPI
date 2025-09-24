@@ -22,7 +22,7 @@ namespace WaterAPI.Persistence.Services
             _userManager = userManager;
         }
 
-        public async Task<CreateUserResponseDTO> CreateAsync(CreateUserDTO model)
+        public async Task<CreateUserResponseDTO> CreateAsync(CreateUserRequestDTO model)
         {
             IdentityResult result = await _userManager.CreateAsync(new()
             {
