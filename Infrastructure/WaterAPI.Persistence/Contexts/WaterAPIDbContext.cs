@@ -21,6 +21,7 @@ namespace WaterAPI.Persistence.Contexts
         public DbSet<Product> Products { get; set; }
         public DbSet<Order> Orders { get; set; } 
         public DbSet<Customer> Customers  { get; set; }
+        public DbSet<Payment> Payments { get; set; }
 
         public DbSet<CardPayload> CardPayloads { get; set; }
         public DbSet<CardRegister> CardRegisters { get; set; }

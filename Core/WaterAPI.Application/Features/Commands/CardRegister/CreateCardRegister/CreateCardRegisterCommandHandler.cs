@@ -32,6 +32,7 @@ namespace WaterAPI.Application.Features.Commands.CardRegister.CreateCardRegister
 
             }
                 );
+
             return new()
             {
                Message=response.Message,

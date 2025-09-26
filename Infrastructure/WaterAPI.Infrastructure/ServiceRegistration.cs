@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WaterAPI.Application.Abstractions.Services;
 using WaterAPI.Application.Abstractions.Storage;
 using WaterAPI.Application.Abstractions.Storage.Local;
 using WaterAPI.Application.Abstractions.Token;
@@ -23,6 +24,7 @@ namespace WaterAPI.Infrastructure
 
             serviceCollection.AddScoped<IStorageService, StorageService>();
             serviceCollection.AddScoped<ITokenHandler, TokenHandler>();
+            serviceCollection.AddScoped<IPaymentService,IyzicoPaymentService>();//Iyzico ödeme servisi
         }
         public static void AddStorage<T>(this IServiceCollection serviceCollection) where T : Storage, IStorage
         {
