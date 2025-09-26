@@ -8,6 +8,8 @@ namespace WaterAPI.Application.DTOs.CardRegister
 {
     public class CreateCardRegisterResponseDTO
     {
-        public string Massage { get; set; }
+        public bool Succeeded { get; set; }
+
+        public string Message { get; set; }
     }
 }

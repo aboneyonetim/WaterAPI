@@ -38,6 +38,7 @@ namespace WaterAPI.Persistence.Contexts
                 if (entry.State == EntityState.Added)
                 {
                     entry.Entity.CreatedDate = DateTime.UtcNow;
+                    entry.Entity.IsActive = true;
                 }
                 else if (entry.State == EntityState.Modified)
                 {

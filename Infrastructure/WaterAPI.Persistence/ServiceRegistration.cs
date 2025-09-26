@@ -14,6 +14,7 @@ using WaterAPI.Domain.Entities.Identity;
 using WaterAPI.Application.Abstractions.Services;
 using WaterAPI.Persistence.Services;
 using WaterAPI.Application.Abstractions.Services.Authentication;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace WaterAPI.Persistence
 {
@@ -48,13 +49,14 @@ namespace WaterAPI.Persistence
             services.AddScoped < ICardRegisterReadRepository,CardRegisterReadRepository>();
             services.AddScoped < ICardRegisterWriteRepository,CardRegisterWriteRepository>();
 
-            services.AddScoped<ICardPayloadReadRepository,  CardPayloadReadRepository>();
-            services.AddScoped<ICardPayloadWriteRepository, CardPayloadWriteRepository>();
+            services.AddScoped < ICardPayloadReadRepository,  CardPayloadReadRepository>();
+            services.AddScoped < ICardPayloadWriteRepository, CardPayloadWriteRepository>();
 
 
 
             services.AddScoped < IUserService, UserService>();
             services.AddScoped < IAuthService, AuthService>();
+            services.AddScoped < ICardRegisterService, CardRegisterService>();
             services.AddScoped < IExternalAuthentication, AuthService>();
             services.AddScoped < IInternalAuthentication, AuthService>();
 

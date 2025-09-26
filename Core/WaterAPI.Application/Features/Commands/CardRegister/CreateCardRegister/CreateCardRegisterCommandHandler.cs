@@ -1,36 +1,48 @@
-﻿using MediatR;
+﻿using FluentValidation.Results;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WaterAPI.Application.Abstractions.Services;
 using WaterAPI.Application.DTOs.CardRegister;
+using WaterAPI.Application.DTOs.User;
 using WaterAPI.Application.Repositories;
 
 namespace WaterAPI.Application.Features.Commands.CardRegister.CreateCardRegister
 {
     public class CreateCardRegisterCommandHandler : IRequestHandler<CreateCardRegisterCommandRequest, CreateCardRegisterCommandResponse>
     {
-        ICardRegisterWriteRepository _cardRegisterWriteRepository;
 
-        public CreateCardRegisterCommandHandler(ICardRegisterWriteRepository cardRegisterWriteRepository)
+        ICardRegisterService _cardRegisterService;
+
+        public CreateCardRegisterCommandHandler(ICardRegisterService cardRegisterService)
         {
-            _cardRegisterWriteRepository = cardRegisterWriteRepository;
+            _cardRegisterService = cardRegisterService;
         }
 
-         async Task<CreateCardRegisterCommandResponse> Handle(CreateCardRegisterCommandRequest request, CancellationToken cancellationToken)
+        public async Task<CreateCardRegisterCommandResponse> Handle(CreateCardRegisterCommandRequest request, CancellationToken cancellationToken)
         {
+            CreateCardRegisterResponseDTO response = await _cardRegisterService.CreateAsync(new()
+            {
+                AppUserId = request.AppUserId,
+                Name = request.Name,
+                Number = request.Number,
 
-            //CreateCardRegisterResponseDTO response = await _cardRegisterWriteRepository.
+            }
+                );
+            return new()
+            {
+               Message=response.Message,
+               Succeeded=response.Succeeded
+               
+            };
 
-            
-            throw new NotImplementedException();
-            
+
+
         }
 
-        Task<CreateCardRegisterCommandResponse> IRequestHandler<CreateCardRegisterCommandRequest, CreateCardRegisterCommandResponse>.Handle(CreateCardRegisterCommandRequest request, CancellationToken cancellationToken)
-        {
-            return Handle(request, cancellationToken);
-        }
+        
     }
 }

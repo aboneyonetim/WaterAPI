@@ -24,6 +24,9 @@ using WaterAPI.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//Client dan gelen request neticesinde oluþturulan httpContext nesnesine katmalardaki classlar üzerinden(buisness logic)
+//eriþebilmemizi saðlayan bir servistir --> builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpContextAccessor();
 // Add services to the container.
 //Persistance ve Infrastructure katmanlarýndaki ServiceRegistration.cs dosyalarýndaki servisler eklendi
 

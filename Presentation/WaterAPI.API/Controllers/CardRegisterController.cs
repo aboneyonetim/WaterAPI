@@ -7,6 +7,7 @@ using WaterAPI.Application.Features.Commands.Product.CreateProduct;
 namespace WaterAPI.API.Controllers
 {
     [Route("api/[Controller]")]
+
     public class CardRegisterController : Controller
     {
 
