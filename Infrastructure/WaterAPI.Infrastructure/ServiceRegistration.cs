@@ -24,7 +24,10 @@ namespace WaterAPI.Infrastructure
 
             serviceCollection.AddScoped<IStorageService, StorageService>();
             serviceCollection.AddScoped<ITokenHandler, TokenHandler>();
-            serviceCollection.AddScoped<IPaymentService,IyzicoPaymentService>();//Iyzico ödeme servisi
+            //serviceCollection.AddScoped<IPaymentService,IyzicoPaymentService>();//Iyzico ödeme servisi
+            serviceCollection.AddScoped<IPaymentService, IyzicoPaymentService>();
+
+
         }
         public static void AddStorage<T>(this IServiceCollection serviceCollection) where T : Storage, IStorage
         {

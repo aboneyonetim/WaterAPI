@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace WaterAPI.Application.DTOs.Payment
 {
-    public class CompletePaymentRequestDTO
+    public class FinalizePaymentRequestDTO
     {
-        public string PaymentId { get; set; }
-        public string ConversationId { get; set; } // Opsiyonel, kontrol için
+        //public string PaymentId { get; set; }
+        //public string ConversationId { get; set; } // Opsiyonel, kontrol için
     }
 }

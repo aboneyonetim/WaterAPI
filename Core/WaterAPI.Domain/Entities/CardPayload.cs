@@ -10,9 +10,13 @@ namespace WaterAPI.Domain.Entities
     public class CardPayload : BaseEntity
     {
         public Guid  CardRegisterId  { get; set; }
-        public float PreviousBalance { get; set; }
-        public float LoadedBalance { get; set; }
-        public float TotalBalance { get; set; }
+        public decimal PreviousBalance { get; set; }
+        public decimal LoadedBalance { get; set; }
+        public virtual Payment Payment { get; set; }
+        public decimal TotalBalance { get; set; }
         public virtual CardRegister CardRegister { get; set; }
+
+        // Hangi ödeme sonucunda bu kaydın oluştuğunu belirten foreign key.
+        public Guid PaymentId { get; set; }
     }
 }

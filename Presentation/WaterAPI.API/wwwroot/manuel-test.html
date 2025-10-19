@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ödeme Sayfası</title>
+</head>
+<body>
+    <h2>Ödeme Formu</h2>
+
+    <!-- Buraya iyzico'nun döndürdüğü script'i yapıştır -->
+    <script type="text/javascript">
+        if (typeof iyziInit == 'undefined') {
+            var iyziInit = {
+                currency: "TRY",
+                token: "cf3948e2-cf72-43ac-aede-d1c1f5c6c1b9",
+                price: 110.00,
+                pwiPrice: 110.00,
+                locale: "tr",
+                baseUrl: "https://sandbox-api.iyzipay.com",
+                merchantGatewayBaseUrl: "https://sandbox-merchantgw.iyzipay.com",
+                consumerGatewayBaseUrl: "https://sandbox-consumerapigw.iyzipay.com",
+                isSandbox: true,
+                buyerName: "haşmet",
+                buyerSurname: "haşmet",
+                email: "haasmet@example.com",
+                merchantName: "Sandbox Merchant Name - 3412460",
+                createTag: function () {
+                    var iyziJSTag = document.createElement('script');
+                    iyziJSTag.setAttribute('src', 'https://sandbox-static.iyzipay.com/checkoutform/v2/bundle.js?v=1759240756081');
+                    document.head.appendChild(iyziJSTag);
+                }
+            };
+            iyziInit.createTag();
+        }
+    </script>
+
+</body>
+</html>

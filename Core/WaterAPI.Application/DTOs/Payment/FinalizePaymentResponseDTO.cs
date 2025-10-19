@@ -6,9 +6,12 @@ using System.Threading.Tasks;
 
 namespace WaterAPI.Application.DTOs.Payment
 {
-    public class CompletePaymentResponseDTO
+    public class FinalizePaymentResponseDTO
     {
-        public bool IsSuccess { get; set; }
+        public bool Succeeded { get; set; }
         public string ErrorMessage { get; set; }
+        public string PaymentStatus { get; set; }
+        public string BasketId { get; set; }
+        public string PaymentId { get; set; }
     }
 }

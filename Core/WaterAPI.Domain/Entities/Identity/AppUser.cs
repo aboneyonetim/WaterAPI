@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace WaterAPI.Domain.Entities.Identity
 {
-   public class AppUser : IdentityUser<string>
+   public class 
+        AppUser : IdentityUser<string>
     {
         public string NameSurname { get; set; }
         public string? RefreshToken { get; set; }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WaterAPI.Application.DTOs.Payment;
+using WaterAPI.Application.DTOs.Payment.Buyer;
 using WaterAPI.Application.DTOs.User;
 using WaterAPI.Application.Features.Commands.AppUser.CreateUser;
 using WaterAPI.Application.Features.Commands.CardRegister.CreateCardRegister;
@@ -18,8 +19,14 @@ namespace WaterAPI.Application.Mappings
             CreateMap<CreateCardRegisterCommandRequest, CreateUserRequestDTO>();
             CreateMap<CreateUserCommandRequest, CreateUserRequestDTO>().ReverseMap();
             CreateMap<CreateUserResponseDTO, CreateUserCommandResponse>().ReverseMap();
-            CreateMap<CreatePaymentCommandRequest, ProcessPaymentRequestDTO>();
-            
+
+            //CreateMap<InitializePaymentCommandRequest, InitializePaymentRequestDTO>();
+
+
+            //CreateMap<BuyerDTO, Iyzipay.Model.Buyer>();
+            //CreateMap<AddressDTO, Iyzipay.Model.Address>();
+            //CreateMap<BasketItemDTO, Iyzipay.Model.BasketItem>();
+
         }
 
     }

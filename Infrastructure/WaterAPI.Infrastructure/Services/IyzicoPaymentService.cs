@@ -11,19 +11,22 @@ using System.Text;
 using System.Threading.Tasks;
 using WaterAPI.Application.Abstractions.Services;
 using WaterAPI.Application.DTOs.Payment;
+using System.Runtime;
+using WaterAPI.Domain.Entities;
 
 namespace WaterAPI.Infrastructure.Services
 {
     class IyzicoPaymentService : IPaymentService
     {
+       
 
-        private readonly Options _options;
+        private readonly Options _iyzicoOptions;
         private readonly IConfiguration _configuration;
 
-        public IyzicoPaymentService(Options options, IConfiguration configuration)
+        public IyzicoPaymentService(IConfiguration configuration)
         {
             _configuration = configuration;
-            _options = new Options
+            _iyzicoOptions = new ()
             {
                 ApiKey = configuration["IyzicoSettings:ApiKey"],
                 SecretKey = configuration["IyzicoSettings:SecretKey"],
@@ -33,96 +36,118 @@ namespace WaterAPI.Infrastructure.Services
 
 
 
-
-        public Task<CompletePaymentResponseDTO> CompletePayment(CompletePaymentRequestDTO request)
+        
+        public async Task<InitializePaymentResponseDTO> InitializePaymentAsync(WaterAPI.Domain.Entities.Payment  payment)
         {
-            throw new NotImplementedException();
-        }
 
-        public async Task<ProcessPaymentResponseDTO> ProcessPayment(ProcessPaymentRequestDTO request)
-        {
-            string callbackUrl = _configuration["IyzicoSettings:CallbackUrl"];
 
-            var iyzicoRequest = new CreatePaymentRequest
+            //**
+            // Iyzico nesneleri oluşturma mantığı Handler'dan buraya taşındı.
+            var request = new CreateCheckoutFormInitializeRequest
             {
                 Locale = Locale.TR.ToString(),
-                ConversationId = request.OrderId,
-                Price = request.Amount.ToString("0.00", CultureInfo.InvariantCulture),
-                PaidPrice = request.Amount.ToString("0.00", CultureInfo.InvariantCulture),
+                ConversationId = Guid.NewGuid().ToString(),
+                Price = payment.Amount.ToString("0.00", CultureInfo.InvariantCulture),
+                PaidPrice = payment.Amount.ToString("0.00", CultureInfo.InvariantCulture),
                 Currency = Currency.TRY.ToString(),
-                Installment = 1,
-                BasketId = request.CardRegisterId.ToString(),
-                PaymentChannel = PaymentChannel.WEB.ToString(),
+                BasketId = payment.Id.ToString(),
                 PaymentGroup = PaymentGroup.PRODUCT.ToString(),
-                CallbackUrl = callbackUrl
-            };
+                CallbackUrl = _configuration["IyzicoSettings:CallbackUrl"],
 
-            PaymentCard paymentCard = new PaymentCard
-            {
-                CardHolderName = request.CardHolderName,
-                CardNumber = request.CardNumber.Replace(" ", ""),
-                ExpireMonth = request.ExpireMonth,
-                ExpireYear = request.ExpireYear,
-                Cvc = request.Cvc,
-                RegisterCard = 0
-            };
-            iyzicoRequest.PaymentCard = paymentCard;
+                Buyer = new Buyer
+                {
+                    Id = payment.CardRegister.AppUser.Id,
+                    Name = payment.CardRegister.AppUser.NameSurname.Split(' ')[0],
+                    Surname = payment.CardRegister.AppUser.NameSurname.Split(' ').Last(),
+                    Email = payment.CardRegister.AppUser.Email,
+                    GsmNumber = "+905350000000", // GEÇİCİ - Zorunlu alan, sonra AppUser'dan alırsın
+                    IdentityNumber = "74300864791", // GEÇİCİ - Sandbox için geçerli test TC No
+                    Ip = "85.34.78.112",           // GEÇİCİ - Sonra dinamik hale getirilecek
+                    City = "Istanbul",             // GEÇİCİ - Zorunlu alan
+                    Country = "Turkey",            // GEÇİCİ - Zorunlu alan
+                    RegistrationAddress = "Placeholder Mah. No:1" // GEÇİCİ - Zorunlu alan
+                },
 
-            Buyer buyer = new Buyer
-            {
-                Id = request.UserId,
-                Name = request.BuyerName,
-                Surname = request.BuyerSurname,
-                GsmNumber = request.BuyerGsmNumber,
-                Email = request.BuyerEmail,
-                IdentityNumber = "11111111111",
-                Ip = "85.34.78.112"
-            };
-            iyzicoRequest.Buyer = buyer;
+                // Sanal ürün olduğu için Fatura ve Teslimat Adresi aynı olabilir.
+                BillingAddress = new Address
+                {
+                    ContactName = payment.CardRegister.AppUser.NameSurname,
+                    City = "Istanbul",    // GEÇİCİ - Zorunlu alan
+                    Country = "Turkey",   // GEÇİCİ - Zorunlu alan
+                    Description = "Placeholder Mah. No:1" // GEÇİCİ - Zorunlu alan
+                },
 
-            Address billingAddress = new Address
-            {
-                ContactName = $"{request.BuyerName} {request.BuyerSurname}",
-                City = "Sivas",
-                Country = "Turkey",
-                Description = "Test Adres"
-            };
-            iyzicoRequest.BillingAddress = billingAddress;
-            iyzicoRequest.ShippingAddress = billingAddress;
+                ShippingAddress = new Address
+                {
+                    ContactName = payment.CardRegister.AppUser.NameSurname,
+                    City = "Istanbul",    // GEÇİCİ - Zorunlu alan
+                    Country = "Turkey",   // GEÇİCİ - Zorunlu alan
+                    Description = "Placeholder Mah. No:1" // GEÇİCİ - Zorunlu alan
+                },
 
-            List<BasketItem> basketItems = new List<BasketItem>();
-            BasketItem firstBasketItem = new BasketItem
-            {
-                Id = request.CardRegisterId.ToString(),
-                Name = "Su Kartı Bakiye Yükleme",
-                Category1 = "Dijital Hizmet",
-                ItemType = BasketItemType.VIRTUAL.ToString(),
-                Price = request.Amount.ToString("0.00", CultureInfo.InvariantCulture)
-            };
-            basketItems.Add(firstBasketItem);
-            iyzicoRequest.BasketItems = basketItems;
-            
-            
-            // ...
-
-            //Payment payment = await Task.Run(() => Payment.Create(iyzicoRequest, _options));
-
-            //if (payment.Status == "failure")
-            //{
-            //    return new ProcessPaymentResponseDTO { IsSuccess = false, ErrorMessage = payment.ErrorMessage };
-            //}
-
-            //if (!string.IsNullOrEmpty(payment.ThreeDSHtmlContent))
-            //{
-            //    return new ProcessPaymentResponseDTO
-            //    {
-            //        IsSuccess = true,
-            //        IsRedirectHtml = true,
-            //        RedirectHtmlContent = payment.ThreeDSHtmlContent
-            //    };
-            //}
-
-            return new ProcessPaymentResponseDTO { IsSuccess = true };
+                BasketItems = new List<BasketItem>
+    {
+        new BasketItem
+        {
+            Id = payment.CardRegisterId.ToString(),
+            Name = "Su Kartı Bakiye Yükleme",
+            Category1 = "Hizmet",
+            ItemType = BasketItemType.VIRTUAL.ToString(),
+            Price = payment.Amount.ToString("0.00", CultureInfo.InvariantCulture)
         }
     }
-}
+            };
+
+            //**
+            // Hata veren senkron metot yerine, artık çalışması gereken ASENKRON metot kullanılıyor.
+            CheckoutFormInitialize checkoutFormInitialize = await CheckoutFormInitialize.Create(request, _iyzicoOptions);
+
+            if (checkoutFormInitialize.Status != "success")
+            {
+                return new InitializePaymentResponseDTO
+                {
+                    Succeeded = false,
+                    ErrorMessage = checkoutFormInitialize.ErrorMessage
+                };
+            }
+
+            return new InitializePaymentResponseDTO
+            {
+                Succeeded = true,
+                Token = checkoutFormInitialize.Token,
+                CheckoutFormContent = checkoutFormInitialize.CheckoutFormContent
+            };
+        }
+        public async Task<FinalizePaymentResponseDTO> FinalizePaymentAsync(string token)
+        {
+            var retrieveRequest = new RetrieveCheckoutFormRequest
+            {
+                Locale = Locale.TR.ToString(),
+                Token = token
+            };
+
+            // Hatalı olan 'RetrieveAsync' metodu, 'Create' gibi 'Retrieve' olarak düzeltildi.
+            CheckoutForm retrieveResult = await CheckoutForm.Retrieve(retrieveRequest, _iyzicoOptions);
+
+            if (retrieveResult.Status == "success" && retrieveResult.PaymentStatus == "SUCCESS")
+            {
+                return new FinalizePaymentResponseDTO
+                {
+                    Succeeded = true,
+                    PaymentStatus = retrieveResult.PaymentStatus,
+                    BasketId = retrieveResult.BasketId,
+                    PaymentId = retrieveResult.PaymentId
+                };
+            }
+
+            return new FinalizePaymentResponseDTO
+            {
+                Succeeded = false,
+                ErrorMessage = retrieveResult.ErrorMessage,
+                PaymentStatus = retrieveResult.PaymentStatus
+            };
+        }
+
+    }
+    }
+

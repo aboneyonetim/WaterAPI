@@ -10,39 +10,18 @@ namespace WaterAPI.Domain.Entities
 {
     public class Payment : BaseEntity
     {
-        /// <summary>
-        /// Ödeme denemesinin tutarı. Para birimiyle ilgili olduğu için 'decimal' kullanmak en iyi pratiktir.
-        /// </summary>
-        public decimal Amount { get; set; }
-
-        /// <summary>
-        /// Ödeme işleminin mevcut durumu. Örn: "Pending", "Succeeded", "Failed".
-        /// </summary>
-        public string Status { get; set; }
-
-        /// <summary>
-        /// Ödemeyi başlatan kullanıcı.
-        /// </summary>
-        public string AppUserId { get; set; }
-
-        /// <summary>
-        /// Ödemenin hangi kayıtlı su kartı için yapıldığı.
-        /// </summary>
-        public Guid CardRegisterId { get; set; }
-
-        /// <summary>
-        /// Ödeme sağlayıcısından (Iyzico) dönen, işleme özel benzersiz ID. Raporlama ve karşılaştırma için kullanılır.
-        /// </summary>
-        public string? GatewayTransactionId { get; set; }
-
-        /// <summary>
-        /// İşlem başarısız olursa, sağlayıcıdan dönen hata mesajı.
-        /// </summary>
-        public string? ErrorMessage { get; set; }
-
-        // --- Navigation Properties ---
-
-        public virtual AppUser AppUser { get; set; }
+        public Guid CardRegisterId { get; set; } // Ödemeyapılan kartın ID'si
         public virtual CardRegister CardRegister { get; set; }
+
+        // Her başarılı ödemenin bir yükleme kaydı olacağını belirtir.
+        public virtual CardPayload CardPayload { get; set; }
+
+        public decimal Amount { get; set; } // Yüklenen tutar
+        public string Status { get; set; } // Ör: "Pending", "Completed", "Failed"
+
+        // Iyzico'dan gelen ve saklamamız gereken referans numaraları
+        public string? IyzicoPaymentId { get; set; } // Başarılı ödeme sonrası Iyzico'nun verdiği ID
+        public string? ConversationId { get; set; } // İşlem boyunca kullanılan konuşma ID'si
+
     }
 }

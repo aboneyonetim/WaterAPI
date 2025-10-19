@@ -4,15 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WaterAPI.Application.DTOs.Payment;
+using WaterAPI.Domain.Entities;
 
 namespace WaterAPI.Application.Abstractions.Services
 {
     public interface IPaymentService
     {
-        Task<ProcessPaymentResponseDTO> ProcessPayment(ProcessPaymentRequestDTO request);
-
-        // Bu metot artık 3D Secure başlatma işini yapacak
-        Task<CompletePaymentResponseDTO> CompletePayment(CompletePaymentRequestDTO request);
+        Task<InitializePaymentResponseDTO> InitializePaymentAsync(Payment payment);
+        Task<FinalizePaymentResponseDTO> FinalizePaymentAsync(string token);
 
 
     }
